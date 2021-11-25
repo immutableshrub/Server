@@ -1,5 +1,6 @@
 import { readFileSync } from "fs";
-import { createServer } from 'https';
+import { createServerHTTPS } from 'https';
+import { createServerHTTP } from 'http';
 import { Server } from "socket.io";
 import { v4 as uuidv4 } from 'uuid';
 
@@ -20,27 +21,56 @@ function createHttpsServerOpts() {
         }
     }
 }
-
-const httpServer = createServer(createHttpsServerOpts(), (req, res) => {
-    res.setHeader("Content-Type", "application/json");
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    switch (req.url) {
-        case '/collab/server/info':
-            res.writeHead(200);
-            res.end(JSON.stringify({
-                servertime: new Date().getTime(),
-                status: 200,
-                version: "1.0.0",
-                socketAddr: '/socket',
-                security: 'none'
-            }));
-            break;
-        default:
-            res.writeHead(404);
-            res.end();
-            break;
+function createHttpServer() {
+    if (process.env.isProduction) {
+        createServerHTTP({}, (req, res) => {
+            res.setHeader("Content-Type", "application/json");
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            switch (req.url) {
+                case '/collab/server/info':
+                    res.writeHead(200);
+                    res.end(JSON.stringify({
+                        servertime: new Date().getTime(),
+                        status: 200,
+                        version: "1.0.0",
+                        socketAddr: '/socket',
+                        security: 'none'
+                    }));
+                    break;
+                default:
+                    res.writeHead(404);
+                    res.end();
+                    break;
+            }
+        });
+    } else {
+        createServerHTTPS({
+            key: readFileSync("C:/Certs/ssc/LocalServer_Cert1/create-cert-key.pem"),
+            cert: readFileSync("C:/Certs/ssc/LocalServer_Cert1/create-cert.pem")
+        }, (req, res) => {
+            res.setHeader("Content-Type", "application/json");
+            res.setHeader("Access-Control-Allow-Origin", "*");
+            switch (req.url) {
+                case '/collab/server/info':
+                    res.writeHead(200);
+                    res.end(JSON.stringify({
+                        servertime: new Date().getTime(),
+                        status: 200,
+                        version: "1.0.0",
+                        socketAddr: '/socket',
+                        security: 'none'
+                    }));
+                    break;
+                default:
+                    res.writeHead(404);
+                    res.end();
+                    break;
+            }
+        });
     }
-});
+}
+
+const httpServer = createHttpServer();
 
 const io = new Server(httpServer, {
     path: "/socket",
