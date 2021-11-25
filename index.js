@@ -104,7 +104,7 @@ io.of(/(.*?)/).on("connection", (socket) => {
     });
 });
 
-httpServer.listen(1674);
+httpServer.listen(process.env.PORT || 1674);
 console.log("Server started");
 
 
