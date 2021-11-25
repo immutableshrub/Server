@@ -10,31 +10,37 @@ const ShitDataStorageSolution = {
     ForwardedEvents: ["SharedStateRelay-DSMG-ioComm"],
 }
 
-const httpServer = createServer(
-    {
-        key: readFileSync("C:/Certs/ssc/LocalServer_Cert1/create-cert-key.pem"),
-        cert: readFileSync("C:/Certs/ssc/LocalServer_Cert1/create-cert.pem")
-    },
-    (req, res) => {
-        res.setHeader("Content-Type", "application/json");
-        res.setHeader("Access-Control-Allow-Origin", "*");
-        switch (req.url) {
-            case '/collab/server/info':
-                res.writeHead(200);
-                res.end(JSON.stringify({
-                    servertime: new Date().getTime(),
-                    status: 200,
-                    version: "1.0.0",
-                    socketAddr: '/socket',
-                    security: 'none'
-                }));
-                break;
-            default:
-                res.writeHead(404);
-                res.end();
-                break;
+function createHttpsServerOpts() {
+    if (process.env.isProduction) {
+        return {}
+    } else {
+        return {
+            key: readFileSync("C:/Certs/ssc/LocalServer_Cert1/create-cert-key.pem"),
+            cert: readFileSync("C:/Certs/ssc/LocalServer_Cert1/create-cert.pem")
         }
-    });
+    }
+}
+
+const httpServer = createServer(createHttpsServerOpts(), (req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    switch (req.url) {
+        case '/collab/server/info':
+            res.writeHead(200);
+            res.end(JSON.stringify({
+                servertime: new Date().getTime(),
+                status: 200,
+                version: "1.0.0",
+                socketAddr: '/socket',
+                security: 'none'
+            }));
+            break;
+        default:
+            res.writeHead(404);
+            res.end();
+            break;
+    }
+});
 
 const io = new Server(httpServer, {
     path: "/socket",
