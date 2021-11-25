@@ -23,7 +23,7 @@ function createHttpsServerOpts() {
 }
 function createHttpServer() {
     if (process.env.isProduction) {
-        createServerHTTP({}, (req, res) => {
+        return createServerHTTP({}, (req, res) => {
             res.setHeader("Content-Type", "application/json");
             res.setHeader("Access-Control-Allow-Origin", "*");
             switch (req.url) {
@@ -44,7 +44,7 @@ function createHttpServer() {
             }
         });
     } else {
-        createServerHTTPS({
+        return createServerHTTPS({
             key: readFileSync("C:/Certs/ssc/LocalServer_Cert1/create-cert-key.pem"),
             cert: readFileSync("C:/Certs/ssc/LocalServer_Cert1/create-cert.pem")
         }, (req, res) => {
