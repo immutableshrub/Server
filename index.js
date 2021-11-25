@@ -1,6 +1,6 @@
 import { readFileSync } from "fs";
-import { createServerHTTPS } from 'https';
-import { createServerHTTP } from 'http';
+import { createServer as createServerHTTPS } from 'https';
+import { createServer as createServerHTTP } from 'http';
 import { Server } from "socket.io";
 import { v4 as uuidv4 } from 'uuid';
 
