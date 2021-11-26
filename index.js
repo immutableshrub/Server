@@ -77,7 +77,9 @@ const io = new Server(httpServer, {
     serveClient: false,
     cors: {
         origin: ["https://stride-frontend.vercel.app", "https://localhost:1673", "https://192.168.86.50:1673"],
-    }
+    },
+    pingInterval: 5000,
+    pingTimeout: 4500,
 });
 
 io.engine.generateId = (req) => {
