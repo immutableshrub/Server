@@ -56,7 +56,7 @@ function createHttpServer() {
                     res.end(JSON.stringify({
                         servertime: new Date().getTime(),
                         status: 200,
-                        version: "1.0.0",
+                        version: "1.20.0",
                         socketAddr: '/socket',
                         security: 'none'
                     }));
