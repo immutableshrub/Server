@@ -111,6 +111,7 @@ io.of(/(.*?)/).on("connection", (socket) => {
         });
     });
     socket.on("disconnect", () => {
+        console.log("disconnected", socket)
         socket.nsp.fetchSockets().then((sockets) => {
             const intl = {
                 currentUsers: []
