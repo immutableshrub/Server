@@ -132,8 +132,8 @@ io.of(/(.*?)/).on("connection", (socket) => {
         socket.nsp.emit('SharedStateRelay-DSMG-ioComm', name, args);
     });
 
-    socket.on('SharedStateRelay-DSMG-ioComm', (name, args) => {
-        socket.nsp.emit('SharedStateRelay-DSMG-ioComm', name, args);
+    socket.on("SharedStateRelay-DSMG-ioLatencyCheck", (callback) => {
+        callback();
     });
 
     socket.on("disconnecting", (reason) => {
