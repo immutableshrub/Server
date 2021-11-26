@@ -95,7 +95,7 @@ io.on("connection", (socket) => {
 io.of(/(.*?)/).on("connection", (socket) => {
     console.log(socket.id + ' has joined.');
     socket.data.userProfile = socket.handshake.query.userprofile;
-
+    let up = socket.data.userProfile;
     socket.nsp.emit('SharedStateRelay-DSMG-ioConnectivity-NewUser', JSON.parse(socket.handshake.query.userprofile));
 
     socket.on("SharedStateRelay-DSMG-ioConnectivityCheck", (callback) => {
@@ -110,7 +110,17 @@ io.of(/(.*?)/).on("connection", (socket) => {
             callback(intl);
         });
     });
-
+    socket.on("disconnect", () => {
+        socket.nsp.fetchSockets().then((sockets) => {
+            const intl = {
+                currentUsers: []
+            }
+            sockets.forEach(socket => {
+                intl.currentUsers.push(JSON.parse(socket.data.userProfile));
+            })
+            socket.nsp.emit('SharedStateRelay-DSMG-ioConnectivity-RemoveUser', JSON.parse(up), intl);
+        });
+    });
 
     socket.on('SharedStateRelay-DSMG-ioDocumentStateUpdate', (documentState) => {
         console.log('got documentState')
