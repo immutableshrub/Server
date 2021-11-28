@@ -76,7 +76,8 @@ const io = new Server(httpServer, {
     path: "/socket",
     serveClient: false,
     cors: {
-        origin: ["https://stride-frontend.vercel.app", "https://localhost:1673", "https://192.168.86.50:1673"],
+        //origin: ["https://stride-frontend.vercel.app", "https://localhost:1673", "https://192.168.86.50:1673"],
+        origin: '*',
     },
     pingInterval: 5000,
     pingTimeout: 4500,
